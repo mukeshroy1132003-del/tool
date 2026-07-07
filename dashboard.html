@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — PulseGrid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="dash-shell">
+  <aside class="dash-sidebar">
+    <a class="brand" href="index.html"><span class="dot"></span> PulseGrid</a>
+    <nav class="dash-nav">
+      <a href="dashboard.html" class="active">▣ Overview</a>
+      <a href="#">◎ Monitors</a>
+      <a href="#">⌁ Servers</a>
+      <a href="#">◫ APM</a>
+      <a href="#">☰ Logs</a>
+      <a href="#">⚑ Incidents</a>
+      <a href="#">◧ Status pages</a>
+      <a href="#">⚙ Settings</a>
+    </nav>
+    <div style="margin-top:30px; padding-top:20px; border-top:1px solid var(--line);">
+      <a href="index.html" class="btn btn-ghost btn-sm btn-block">← Back to site</a>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <h1>Overview</h1>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <span class="badge up">All systems operational</span>
+        <a href="#" class="btn btn-primary btn-sm">+ Add monitor</a>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="k">Uptime, 30d</div>
+        <div class="v">99.982%</div>
+        <div class="delta up">▲ 0.014% vs last month</div>
+      </div>
+      <div class="dash-card">
+        <div class="k">Avg response time</div>
+        <div class="v">184 ms</div>
+        <div class="delta down">▼ 12ms slower</div>
+      </div>
+      <div class="dash-card">
+        <div class="k">Active monitors</div>
+        <div class="v">1,204</div>
+        <div class="delta up">▲ 18 new this week</div>
+      </div>
+      <div class="dash-card">
+        <div class="k">Open incidents</div>
+        <div class="v">2</div>
+        <div class="delta down">1 critical, 1 warning</div>
+      </div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="panel-head">
+        <h3>Response time — last 24 hours</h3>
+        <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-faint);">ms, avg across all monitors</span>
+      </div>
+      <canvas id="responseChart" height="80"></canvas>
+    </div>
+
+    <div class="dash-grid" style="grid-template-columns: 2fr 1fr;">
+      <div class="dash-panel" style="margin-bottom:0;">
+        <div class="panel-head">
+          <h3>Monitors</h3>
+          <a href="#" style="font-size:12.5px; color:var(--signal);">View all →</a>
+        </div>
+        <div class="monitor-row">
+          <div class="name"><span class="badge up"></span> Marketing site <span class="url">example.com</span></div>
+          <div class="resp">142ms</div>
+        </div>
+        <div class="monitor-row">
+          <div class="name"><span class="badge up"></span> Checkout API <span class="url">api.example.com/checkout</span></div>
+          <div class="resp">211ms</div>
+        </div>
+        <div class="monitor-row">
+          <div class="name"><span class="badge warn"></span> Image CDN <span class="url">cdn.example.com</span></div>
+          <div class="resp">680ms</div>
+        </div>
+        <div class="monitor-row">
+          <div class="name"><span class="badge up"></span> Auth service <span class="url">auth.example.com</span></div>
+          <div class="resp">98ms</div>
+        </div>
+        <div class="monitor-row">
+          <div class="name"><span class="badge down"></span> Legacy reports DB <span class="url">reports-db.internal</span></div>
+          <div class="resp">timeout</div>
+        </div>
+        <div class="monitor-row">
+          <div class="name"><span class="badge up"></span> Mobile API gateway <span class="url">m.api.example.com</span></div>
+          <div class="resp">156ms</div>
+        </div>
+      </div>
+
+      <div class="dash-panel" style="margin-bottom:0;">
+        <div class="panel-head">
+          <h3>Uptime by region</h3>
+        </div>
+        <canvas id="regionChart" height="180"></canvas>
+      </div>
+    </div>
+
+    <div class="dash-panel" style="margin-top:18px;">
+      <div class="panel-head">
+        <h3>Recent incidents</h3>
+      </div>
+      <div class="monitor-row">
+        <div class="name"><span class="badge down"></span> Legacy reports DB — connection timeout</div>
+        <div class="resp" style="color:var(--text-faint);">Started 6 min ago</div>
+      </div>
+      <div class="monitor-row">
+        <div class="name"><span class="badge warn"></span> Image CDN — elevated response time</div>
+        <div class="resp" style="color:var(--text-faint);">Started 22 min ago</div>
+      </div>
+      <div class="monitor-row">
+        <div class="name"><span class="badge up"></span> Checkout API — resolved, brief 502 spike</div>
+        <div class="resp" style="color:var(--text-faint);">Resolved 3h ago</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const chartTextColor = '#99A2B5';
+  const gridColor = '#1D2431';
+
+  const hours = Array.from({length:24}, (_,i) => (i).toString().padStart(2,'0') + ':00');
+  const responseData = [180,175,190,210,205,195,188,192,198,205,215,230,240,225,210,200,195,190,205,220,215,198,188,184];
+
+  new Chart(document.getElementById('responseChart'), {
+    type: 'line',
+    data: {
+      labels: hours,
+      datasets: [{
+        data: responseData,
+        borderColor: '#FF8A3D',
+        backgroundColor: 'rgba(255,138,61,0.08)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 0,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display:false } },
+      scales: {
+        x: { ticks: { color: chartTextColor, maxTicksLimit: 8, font:{family:'JetBrains Mono', size:10} }, grid: { color: gridColor } },
+        y: { ticks: { color: chartTextColor, font:{family:'JetBrains Mono', size:10} }, grid: { color: gridColor } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('regionChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['US East','EU West','Asia Pacific','South America'],
+      datasets: [{
+        data: [99.99, 99.97, 99.90, 99.95],
+        backgroundColor: ['#FF8A3D','#34D399','#FBBF24','#5C6479'],
+        borderColor: '#181F2B',
+        borderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position:'bottom', labels:{ color: chartTextColor, font:{size:11}, boxWidth:10 } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
