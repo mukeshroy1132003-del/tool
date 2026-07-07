@@ -8,16 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cover: #3E1A1A;
-    --cover-dark: #2A1010;
-    --brass: #C9A24B;
-    --brass-dim: #9c7d3a;
-    --paper: #F4EEDD;
-    --paper-line: #E1D6B8;
-    --ink: #2B241A;
-    --ink-soft: #6b6252;
-    --income: #3F6B4A;
-    --expense: #A0432B;
+    --cover: #241E52;
+    --cover-dark: #16123A;
+    --brass: #D4AF37;
+    --brass-dim: #a8872a;
+    --paper: #F3EFE2;
+    --paper-line: #DCD5C0;
+    --ink: #232043;
+    --ink-soft: #6b6680;
+    --income: #2E7D5B;
+    --expense: #A13D3D;
     --radius: 3px;
   }
   *{box-sizing:border-box;}
@@ -411,7 +411,7 @@
   let entries = [];
   let currentType = 'expense';
 
-  const fmt = (n) => (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);
+  const fmt = (n) => (n < 0 ? '-₹' : '₹') + Math.abs(n).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
 
   const typeToggle = document.getElementById('typeToggle');
   typeToggle.addEventListener('click', (e) => {
@@ -501,7 +501,7 @@
           <td>${entry.date}</td>
           <td>${escapeHtml(entry.desc)}</td>
           <td class="cat"><span>${entry.category}</span></td>
-          <td class="amount ${entry.type}">${entry.type === 'income' ? '+' : '−'}${fmt(entry.amount).replace('$','$')}</td>
+          <td class="amount ${entry.type}">${entry.type === 'income' ? '+' : '−'}${fmt(entry.amount)}</td>
           <td><button class="del-btn" title="Delete" data-id="${entry.id}">✕</button></td>
         `;
         body.appendChild(tr);
