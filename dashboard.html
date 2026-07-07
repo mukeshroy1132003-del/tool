@@ -130,8 +130,8 @@
 </div>
 
 <script>
-  const chartTextColor = '#99A2B5';
-  const gridColor = '#1D2431';
+  const chartTextColor = '#675F82';
+  const gridColor = '#F1ECFB';
 
   const hours = Array.from({length:24}, (_,i) => (i).toString().padStart(2,'0') + ':00');
   const responseData = [180,175,190,210,205,195,188,192,198,205,215,230,240,225,210,200,195,190,205,220,215,198,188,184];
@@ -142,8 +142,8 @@
       labels: hours,
       datasets: [{
         data: responseData,
-        borderColor: '#FF8A3D',
-        backgroundColor: 'rgba(255,138,61,0.08)',
+        borderColor: '#7C3AED',
+        backgroundColor: 'rgba(124,58,237,0.08)',
         fill: true,
         tension: 0.35,
         pointRadius: 0,
@@ -166,8 +166,8 @@
       labels: ['US East','EU West','Asia Pacific','South America'],
       datasets: [{
         data: [99.99, 99.97, 99.90, 99.95],
-        backgroundColor: ['#FF8A3D','#34D399','#FBBF24','#5C6479'],
-        borderColor: '#181F2B',
+        backgroundColor: ['#7C3AED','#16A34A','#D97706','#9C93B8'],
+        borderColor: '#FFFFFF',
         borderWidth: 3
       }]
     },
